@@ -1,0 +1,11 @@
+#!/bin/bash
+yum update
+yum install git -y
+yum install nodejs -y
+git clone https://github.com/Randy-001/main_project.git
+cd main_project/
+echo 'TWILIO_ACCOUNT_SID="ACa668086efe21f9b9b0cdc3603b9c31d0"
+TWILIO_AUTH_TOKEN="5368219990cfff837874547d9c2c681b"' > .env
+npm i
+npm i -g pm2 
+pm2 start index.js

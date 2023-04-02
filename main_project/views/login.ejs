@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity=
+    "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+   
+    <title>Home Authentication</title>
+    <script>
+    
+    
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-sm-4">
+                <form onsubmit="val(event)" action="/login" method="POST">
+                    
+                      <div class="form-group">
+                        <label for="username">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                       
+                      </div>
+                     
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                        
+                      </div>
+                      <div class="form-group">
+                          
+                        <button type="button" id="geolocation" class="btn btn-primary btn-lg btn-block">Add Geolocation</button>
+                        <h4 id="option" style="text-align: center;">OR</h4>
+                        <button type="button"	id="phone" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModal">Show QRCode</button><br>
+                        <button type="button" id="touchphone" style="display: none;" id="geolocation" class="btn btn-primary btn-lg btn-block">Get Geolocation</button>
+                        <div class="modal fade"	id="exampleModal"	tabindex="-1"	role="dialog"	aria-labelledby="exampleModalLabel"	aria-hidden="true">
+  
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            
+                              <!-- Add image inside the body of modal -->
+                              <div class="modal-body">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://suryavelu.pythonanywhere.com/?uid=<%=unique%>" alt="">
+                              </div>
+
+                              <div class="modal-footer">
+                                <button type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal">
+                                  Close
+                              </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div><br>
+                        <input type="text" id="sentlocation" name="geolocation" class="form-control" name="email" readonly  required>
+                      </div>
+                      
+                   
+                      
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+                </form>
+                  <h4><a href="/security">Forgot password?</a></h4>
+                  <h4><a href="/signup">New User?</a></h4>
+    
+            </div>
+            <div>
+
+            </div>
+          
+
+        </div>
+       
+        
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity=
+"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous">
+</script>
+<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity=
+"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous">
+</script>
+<script src=
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity=
+"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous">
+</script>
+</body>
+<script>
+  var loc;
+  var cr='<%-correct%>'
+  if(cr===false){
+    alert("Incorrect Password")
+  }
+  const l=document.getElementById("geolocation")
+    console.log(l)
+    l.addEventListener('click',(e)=>{
+      document.getElementById("option").hidden=true
+     document.getElementById("phone").hidden=true
+        navigator.geolocation.getCurrentPosition(position => {
+                        const { latitude, longitude } = position.coords;
+                        console.log(position.coords.accuracy)
+                        const g=document.getElementById("sentlocation")
+                        loc=latitude+","+longitude
+                        let l=loc.split(",")
+                        let arr=[]
+                        for(let i=0;i<2;i++){   
+                          arr.push(l[i].split(".")[0])
+                          arr[i]=arr[i]+".XXXXXXX"
+                        }
+                        g.value=arr[0]+","+arr[1]
+                        console.log(latitude,longitude)
+                      });
+       })
+  function val(event){
+    event.preventDefault()
+    var pass=document.getElementById("password")
+    var myPassword = "mfaauth1234@";
+    pass.value = CryptoJS.AES.encrypt(pass.value, myPassword);
+    document.getElementById("sentlocation").value=loc
+    console.log(pass.value)
+    event.currentTarget.submit();
+
+  }
+  document.getElementById("phone").addEventListener('click',()=>{
+  document.getElementById("option").hidden=true
+  document.getElementById("touchphone").style.display="block"
+     document.getElementById("geolocation").hidden=true
+})
+var unique='<%-unique%>';
+document.getElementById("touchphone").addEventListener('click',()=>{
+  let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type':
+                    'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({uid:unique})
+        }
+  let fetchRes = fetch("/fetchlocation",options);
+        fetchRes.then(res =>
+            res.json())
+            .then(d => {
+              console.log(d)
+              if(d.find){
+                loc=d.geolocation
+                let l=loc.split(",")
+                let arr=[]
+                for(let i=0;i<2;i++){   
+                  arr.push(l[i].split(".")[0])
+                  arr[i]=arr[i]+".XXXXX"
+                }
+                document.getElementById("sentlocation").value=arr[0]+","+arr[1]
+              }
+              else{
+                alert("Get the geolocation from phone!!")
+              }
+            })
+})
+</script>
+
+</html>

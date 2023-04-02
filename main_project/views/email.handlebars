@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/1c2c2462bf.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <title>Authentication</title>
+</head>
+<body>
+    <div>
+        <p><h4>
+
+        
+            This is to notify you that you have suuccessfully logged in.If it's not you kindly submit the form.
+        </h4>
+        </p>
+        <form id='radio-form' method="POST" action="http://localhost:3000/validateUser">
+            <select name="validate">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+            <label style="display: none" for="mkid" >Unique-Id</label>
+            <input  style="display: none" type="text" name="jwt" id="mkid" value={{mkid}}>
+            <button type="submit">Submit</button>
+        </form>
+        
+        
+        
+    </div>
+    <script>
+        
+        let elements = ['yes','no']
+        let form = document.getElementById('radio-form');
+        console.log(form)
+        elements.forEach(ele=>{
+            document.getElementById(ele).addEventListener('click',function(){
+            form.submit();
+        })
+        })
+       
+    </script>
+</body>
+
+</html>

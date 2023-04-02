@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href=
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity=
+"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+		crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/1c2c2462bf.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <title>Home Authentication</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-sm-4">
+                <form onsubmit="validate(event)" action="/register" method="POST">
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname"  placeholder="First Name" required>
+                       
+                      </div>
+                      <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required>
+                       
+                      </div>
+                      <div class="form-group">
+                        <label for="username">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                       
+                      </div>
+                     
+                      <div class="form-group">
+                        <label  for="passwordinput">
+                            Password
+                        </label>
+                        <div >
+                            <input id="password" class="form-control input-md"
+                            name="password" type="password" 
+                            placeholder="Enter your password" >
+                            <span class="show-pass" onclick="toggle()">
+                                <i class="far fa-eye" onclick="myFunction(this)"></i>
+                            </span>
+                            <div id="popover-password">
+                                <p><span id="result"></span></p>
+                                <div class="progress">
+                                    <div id="password-strength" 
+                                        class="progress-bar" 
+                                        role="progressbar" 
+                                        aria-valuenow="40" 
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100" 
+                                        style="width:0%">
+                                    </div>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li class="">
+                                        <span class="low-upper-case">
+                                            <i class="fas fa-circle" aria-hidden="true"></i>
+                                            &nbsp;Lowercase &amp; Uppercase
+                                        </span>
+                                    </li>
+                                    <li class="">
+                                        <span class="one-number">
+                                            <i class="fas fa-circle" aria-hidden="true"></i>
+                                            &nbsp;Number (0-9)
+                                        </span> 
+                                    </li>
+                                    <li class="">
+                                        <span class="one-special-char">
+                                            <i class="fas fa-circle" aria-hidden="true"></i>
+                                            &nbsp;Special Character (!@#$%^&*)
+                                        </span>
+                                    </li>
+                                    <li class="">
+                                        <span class="eight-character">
+                                            <i class="fas fa-circle" aria-hidden="true"></i>
+                                            &nbsp;Atleast 8 Character
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                      <div class="form-group">
+                            <label for="phonenumber">Phonenumber</label>
+                            <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
+                            
+                      </div>
+                      <div id="otpauth">
+                        <button type="button" onclick="otpfunc()" class="btn btn-primary btn-lg btn-block">Get OTP</button><br>
+                        <input type="text" id="otp"  class="form-control"><br>
+                        <button type="button" onclick="checkfunction()" class="btn btn-primary btn-lg btn-block">Submit</button>
+                      </div>
+                    
+                     
+                      <div id="auth" hidden>
+                        <div class="form-group">
+                          <label for="email">E-Mail</label>
+                          <input type="email" class="form-control" name="email" id="email" required >
+                  
+                        </div>
+                        <div class="form-group">
+                          
+                          <button type="button" id="geolocation" class="btn btn-primary btn-lg btn-block">Add Geolocation</button>
+                          <h4 id="option" style="text-align: center;">OR</h4>
+                          <button type="button"	id="phone" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModal">Show QRCode</button><br>
+                          <button type="button" id="touchphone" style="display: none;" id="geolocation" class="btn btn-primary btn-lg btn-block">Get Geolocation</button>
+                          <div class="modal fade"	id="exampleModal"	tabindex="-1"	role="dialog"	aria-labelledby="exampleModalLabel"	aria-hidden="true">
+		
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                              
+                                <!-- Add image inside the body of modal -->
+                                <div class="modal-body">
+                                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://suryavelu.pythonanywhere.com/?uid=<%=unique%>" alt="">
+                                </div>
+
+                                <div class="modal-footer">
+                                  <button type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal">
+                                    Close
+                                </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div><br>
+                          <input type="text" id="sentlocation" name="geolocation" class="form-control" name="email" readonly  required>
+                        </div>
+                        <div class="form-group">
+                          <select id="sq" name="secqn" class="form-control">
+                              <option value="What city were you born in?">What city were you born in?</option>
+                              <option value="What is your oldest sibling's middle name?" >What is your oldest sibling's middle name?</option>
+                              <option value="What was the first concert you attended?" >What was the first concert you attended?</option>
+                              <option value="What was the make and model of your first car?">What was the make and model of your first car?</option>
+                              <option value="In what city or town did your parents meet?" >In what city or town did your parents meet?</option>
+      
+                            </select>
+                            <br>
+                            <input type="text" id="sqans" name="secqnvalue" class="form-control" required>
+                            
+                        </div>
+                        <div class="form-group">
+                          <select  name="secqn1" class="form-control">
+                              <option id="one" value="What city were you born in?">What city were you born in?</option>
+                              <option id="two" value="What is your oldest sibling's middle name?" >What is your oldest sibling's middle name?</option>
+                              <option id="three" value="What was the first concert you attended?" >What was the first concert you attended?</option>
+                              <option id="four" value="What was the make and model of your first car?">What was the make and model of your first car?</option>
+                              <option id="five" value="In what city or town did your parents meet?" >In what city or town did your parents meet?</option>
+      
+                            </select>
+                            <br>
+                            <input type="text" name="secqnvalue1" class="form-control" required>
+                            
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+
+                      </div>
+                     
+                     
+                        
+                        
+                  
+                      
+                    
+                  </form>
+    
+            </div>
+          
+
+        </div>
+       
+        
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity=
+"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous">
+</script>
+<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity=
+"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous">
+</script>
+<script src=
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity=
+"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous">
+</script>
+</body>
+<script>
+  var loc;
+const l=document.getElementById("geolocation")
+   
+    console.log(l)
+    l.addEventListener('click',(e)=>{
+      document.getElementById("option").hidden=true
+     document.getElementById("phone").hidden=true
+        navigator.geolocation.getCurrentPosition(position => {
+                        const { latitude, longitude } = position.coords;
+                        const g=document.getElementById("sentlocation")
+                        loc=latitude+","+longitude
+                        let l=loc.split(",")
+                        let arr=[]
+                        for(let i=0;i<2;i++){   
+                          arr.push(l[i].split(".")[0])
+                          arr[i]=arr[i]+".XXXXXXX"
+                        }
+                        g.value=arr[0]+","+arr[1]
+                        console.log(latitude,longitude)
+                      });
+       })
+       document.getElementById("sqans").addEventListener('click',(e)=>{
+        var sec=document.getElementById("sq").value
+        let one=document.getElementById("one")
+        let two=document.getElementById("two")
+        let three =document.getElementById("three")
+        let four=document.getElementById("four")
+        let five=document.getElementById("five")
+        if(sec === one.value){
+          one.hidden=true
+          two.hidden=false
+          three.hidden=false
+          four.hidden=false
+          five.hidden=false
+        }
+        else if(sec === two.value){
+          one.hidden=false
+          two.hidden=true
+          three.hidden=false
+          four.hidden=false
+          five.hidden=false
+        }
+        else if(sec === three.value){
+          one.hidden=false
+          two.hidden=false
+          three.hidden=true
+          four.hidden=false
+          five.hidden=false
+        }
+        else if(sec === four.value){
+          one.hidden=false
+          two.hidden=false
+          three.hidden=false
+          four.hidden=true
+          five.hidden=false
+        }
+        else{
+          one.hidden=false
+          two.hidden=false
+          three.hidden=false
+          four.hidden=false
+          five.hidden=true
+        }
+       })
+       var OTP;
+function otpfunc(){
+  let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type':
+                    'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({phonenumber:document.getElementById("phonenumber").value})
+        }
+  let fetchRes = fetch("/otpfunction",options);
+        fetchRes.then(res =>
+            res.json())
+            .then(d => {
+              console.log(d)
+                OTP=d.otp
+            })
+}
+function checkfunction(){
+  if(document.getElementById("otp").value===OTP)
+  {
+    document.getElementById("otpauth").hidden=true
+    document.getElementById("auth").hidden=false
+  }
+}
+var myPassword = "mfaauth1234@";
+function validate(event){
+  event.preventDefault()
+  var pass=document.getElementById("password")
+  pass.value = CryptoJS.AES.encrypt(pass.value, myPassword);
+  document.getElementById("sentlocation").value=loc
+  console.log(pass.value)
+  event.currentTarget.submit();
+}
+var unique='<%-unique%>';
+
+document.getElementById("phone").addEventListener('click',()=>{
+  document.getElementById("option").hidden=true
+  document.getElementById("touchphone").style.display="block"
+     document.getElementById("geolocation").hidden=true
+})
+
+document.getElementById("touchphone").addEventListener('click',()=>{
+  let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type':
+                    'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({uid:unique})
+        }
+  let fetchRes = fetch("/fetchlocation",options);
+        fetchRes.then(res =>
+            res.json())
+            .then(d => {
+              console.log(d)
+              if(d.find){
+                loc=d.geolocation
+                let l=loc.split(",")
+                let arr=[]
+                for(let i=0;i<2;i++){   
+                  arr.push(l[i].split(".")[0])
+                  arr[i]=arr[i]+".XXXXX"
+                }
+                document.getElementById("sentlocation").value=arr[0]+","+arr[1]
+
+              }
+              else{
+                alert("Get the geolocation from phone!!")
+              }
+            })
+})
+let state = false;
+let password = document.getElementById("password");
+let passwordStrength = document.getElementById("password-strength");
+let lowUpperCase = document.querySelector(".low-upper-case i");
+let number = document.querySelector(".one-number i");
+let specialChar = document.querySelector(".one-special-char i");
+let eightChar = document.querySelector(".eight-character i");
+
+password.addEventListener("keyup", function(){
+    let pass = document.getElementById("password").value;
+    checkStrength(pass);
+});
+
+function toggle(){
+    if(state){
+        document.getElementById("password").setAttribute("type","password");
+        state = false;
+    }else{
+        document.getElementById("password").setAttribute("type","text")
+        state = true;
+    }
+}
+
+function myFunction(show){
+    show.classList.toggle("fa-eye-slash");
+}
+
+function checkStrength(password) {
+    let strength = 0;
+
+    if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
+        strength += 1;
+        lowUpperCase.classList.remove('fa-circle');
+        lowUpperCase.classList.add('fa-check');
+    } else {
+        lowUpperCase.classList.add('fa-circle');
+        lowUpperCase.classList.remove('fa-check');
+    }
+
+    if (password.match(/([0-9])/)) {
+        strength += 1;
+        number.classList.remove('fa-circle');
+        number.classList.add('fa-check');
+    } else {
+        number.classList.add('fa-circle');
+        number.classList.remove('fa-check');
+    }
+    if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) {
+        strength += 1;
+        specialChar.classList.remove('fa-circle');
+        specialChar.classList.add('fa-check');
+    } else {
+        specialChar.classList.add('fa-circle');
+        specialChar.classList.remove('fa-check');
+    }
+    if (password.length > 7) {
+        strength += 1;
+        eightChar.classList.remove('fa-circle');
+        eightChar.classList.add('fa-check');
+    } else {
+        eightChar.classList.add('fa-circle');
+        eightChar.classList.remove('fa-check');   
+    }
+
+  
+    if (strength < 2) {
+        passwordStrength.classList.remove('progress-bar-warning');
+        passwordStrength.classList.remove('progress-bar-success');
+        passwordStrength.classList.add('progress-bar-danger');
+        passwordStrength.style = 'width: 10%';
+    } else if (strength == 3) {
+        passwordStrength.classList.remove('progress-bar-success');
+        passwordStrength.classList.remove('progress-bar-danger');
+        passwordStrength.classList.add('progress-bar-warning');
+        passwordStrength.style = 'width: 60%';
+    } else if (strength == 4) {
+        passwordStrength.classList.remove('progress-bar-warning');
+        passwordStrength.classList.remove('progress-bar-danger');
+        passwordStrength.classList.add('progress-bar-success');
+        passwordStrength.style = 'width: 100%';
+    }
+}
+     
+
+       
+
+       </script>
+</html>
